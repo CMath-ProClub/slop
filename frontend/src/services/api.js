@@ -94,7 +94,31 @@ export const uploadToTikTok = async (clipId, caption, hashtags, accessToken) => 
   return response.data;
 };
 
+// Library endpoints
+export const getLibraryTVShows = async (page = 1, limit = 50) => {
+  const response = await apiClient.get('/library/tv-shows', {
+    params: { page, limit }
+  });
+  return response.data;
+};
+
+export const getLibraryMovies = async (page = 1, limit = 50) => {
+  const response = await apiClient.get('/library/movies', {
+    params: { page, limit }
+  });
+  return response.data;
+};
+
+export const getLibraryStreamers = async (page = 1, limit = 50) => {
+  const response = await apiClient.get('/library/streamers', {
+    params: { page, limit }
+  });
+  return response.data;
+};
+
 export default {
+  get: apiClient.get.bind(apiClient),
+  post: apiClient.post.bind(apiClient),
   searchContent,
   getAutocomplete,
   getContentDetails,
@@ -105,5 +129,8 @@ export default {
   getYouTubeAuthUrl,
   uploadToYouTube,
   getTikTokAuthUrl,
-  uploadToTikTok
+  uploadToTikTok,
+  getLibraryTVShows,
+  getLibraryMovies,
+  getLibraryStreamers
 };
