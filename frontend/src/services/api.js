@@ -17,6 +17,13 @@ export const searchContent = async (query, type = 'multi', page = 1) => {
   return response.data;
 };
 
+export const getAutocomplete = async (query) => {
+  const response = await apiClient.get('/content/autocomplete', {
+    params: { query }
+  });
+  return response.data;
+};
+
 export const getContentDetails = async (id, type = 'tv') => {
   const response = await apiClient.get(`/content/${id}`, {
     params: { type }
@@ -89,6 +96,7 @@ export const uploadToTikTok = async (clipId, caption, hashtags, accessToken) => 
 
 export default {
   searchContent,
+  getAutocomplete,
   getContentDetails,
   getSeasonEpisodes,
   createClip,

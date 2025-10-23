@@ -46,3 +46,44 @@ exports.getSeasonEpisodes = async (req, res, next) => {
     next(error);
   }
 };
+
+/**
+ * Get autocomplete suggestions for search
+ */
+exports.getAutocompleteSuggestions = async (req, res, next) => {
+  try {
+    const { query } = req.query;
+
+    if (!query || query.length < 2) {
+      return res.json({ suggestions: [] });
+    }
+
+    // Search multiple types in parallel
+    const [tvResults, movieResults] = await Promise.all([
+      tmdbService.searchContent(query, 'tv', 1).catch(() => ({ results: [] })),
+      tmdbService.searchContent(query, 'movie', 1).catch(() => ({ results: [] }))
+    ]);
+
+    // Combine and limit results
+    const suggestions = [
+      ...tvResults.results.slice(0, 5).map(item => ({
+        id: item.id,
+        title: item.title,
+        type: 'tv',
+        year: item.releaseDate?.split('-')[0],
+        posterPath: item.posterPath
+      })),
+      ...movieResults.results.slice(0, 5).map(item => ({
+        id: item.id,
+        title: item.title,
+        type: 'movie',
+        year: item.releaseDate?.split('-')[0],
+        posterPath: item.posterPath
+      }))
+    ].slice(0, 10); // Limit to 10 total suggestions
+
+    res.json({ suggestions });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -171,14 +171,57 @@ exports.getClipStatus = async (req, res, next) => {
 exports.downloadClip = async (req, res, next) => {
   try {
     const { clipId } = req.params;
+    const path = require('path');
+    const fs = require('fs');
 
     const clipData = await clipStorageService.getClip(clipId);
 
-    if (!clipData) {
-      return res.status(404).json({ error: 'Clip not found' });
+    if (clipData && fs.existsSync(clipData.filePath)) {
+      return res.download(clipData.filePath, `clip-${clipId}.mp4`);
     }
 
-    res.download(clipData.filePath, `clip-${clipId}.mp4`);
+    // Check if status indicates completed
+    const status = clipStatuses.get(clipId);
+    
+    // If video processor created a placeholder, return info
+    if (status && status.status === 'completed') {
+      // Create a simple text file with instructions since no actual video exists
+      const placeholderPath = path.join(__dirname, '../../processed', `${clipId}_placeholder.txt`);
+      const placeholderDir = path.dirname(placeholderPath);
+      
+      if (!fs.existsSync(placeholderDir)) {
+        fs.mkdirSync(placeholderDir, { recursive: true });
+      }
+      
+      const placeholderContent = `
+Clip ID: ${clipId}
+Status: Ready for processing
+
+To generate actual video clips:
+1. Start the Python video processor service: cd video-processor && python app.py
+2. The processor will create vertical video clips (9:16 aspect ratio)
+3. Videos will be optimized for YouTube Shorts and TikTok
+
+Note: Currently running in mock mode. The backend is functional and ready to process videos
+once the Python service is running.
+
+For YouTube upload: The clip metadata has been created and is ready for upload.
+You can test the YouTube upload flow even without the actual video file.
+      `.trim();
+      
+      fs.writeFileSync(placeholderPath, placeholderContent);
+      
+      return res.download(placeholderPath, `clip-${clipId}-info.txt`, (err) => {
+        if (!err) {
+          fs.unlinkSync(placeholderPath); // Clean up after download
+        }
+      });
+    }
+
+    return res.status(404).json({ 
+      error: 'Clip not found or not yet processed',
+      message: 'Start the Python video processor service to generate actual video clips'
+    });
   } catch (error) {
     next(error);
   }
