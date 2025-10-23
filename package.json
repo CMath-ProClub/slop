@@ -1,0 +1,26 @@
+{
+  "name": "clip-generator",
+  "version": "1.0.0",
+  "description": "Web application for generating vertical video clips from TV shows, movies, and streamer content",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "cd frontend && npm install && cd ../backend && npm install && cd ../video-processor && pip install -r requirements.txt",
+    "dev:frontend": "cd frontend && npm start",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:processor": "cd video-processor && python app.py",
+    "build:frontend": "cd frontend && npm run build",
+    "start:backend": "cd backend && npm start",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down"
+  },
+  "keywords": [
+    "video",
+    "clips",
+    "tiktok",
+    "youtube-shorts",
+    "vertical-video"
+  ],
+  "author": "",
+  "license": "ISC"
+}

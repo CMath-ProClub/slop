@@ -1,0 +1,23 @@
+{
+  "lastUpdated": "2025-10-22",
+  "sources": {
+    "tmdb": "The Movie Database API",
+    "note": "This file contains popular media IDs for quick access. The app still uses TMDb API for real-time data."
+  },
+  "topTVShows": {
+    "description": "Top 500 TV Shows from TMDb",
+    "endpoint": "/api/content/library/tv-shows",
+    "fetchOnDemand": true
+  },
+  "topMovies": {
+    "description": "Top 1000 Movies from TMDb",
+    "endpoint": "/api/content/library/movies",
+    "fetchOnDemand": true
+  },
+  "topStreamers": {
+    "description": "Top 100 Content Creators/Streamers",
+    "endpoint": "/api/content/library/streamers",
+    "manual": true,
+    "note": "Streamers require manual content upload or API integration with platforms like YouTube, Twitch, etc."
+  }
+}

@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:5000/api
+    depends_on:
+      - backend
+    networks:
+      - clip-generator-network
+
+  # Backend Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - FRONTEND_URL=http://localhost:3000
+      - VIDEO_PROCESSOR_URL=http://video-processor:8000
+      - TMDB_API_KEY=${TMDB_API_KEY}
+      - YOUTUBE_API_KEY=${YOUTUBE_API_KEY}
+      - YOUTUBE_CLIENT_ID=${YOUTUBE_CLIENT_ID}
+      - YOUTUBE_CLIENT_SECRET=${YOUTUBE_CLIENT_SECRET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/processed:/app/processed
+    depends_on:
+      - video-processor
+    networks:
+      - clip-generator-network
+
+  # Video Processor Service
+  video-processor:
+    build:
+      context: ./video-processor
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - VIDEO_UPLOAD_DIR=/app/uploads
+      - VIDEO_OUTPUT_DIR=/app/processed
+    volumes:
+      - ./video-processor/uploads:/app/uploads
+      - ./video-processor/processed:/app/processed
+    networks:
+      - clip-generator-network
+
+networks:
+  clip-generator-network:
+    driver: bridge
+
+volumes:
+  backend-uploads:
+  backend-processed:
+  processor-uploads:
+  processor-processed:
