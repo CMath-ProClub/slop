@@ -4,12 +4,13 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 
-let contentRoutes, clipRoutes, uploadRoutes, libraryRoutes;
+let contentRoutes, clipRoutes, uploadRoutes, libraryRoutes, youtubeClipsRoutes;
 try {
   contentRoutes = require('./routes/content.routes');
   clipRoutes = require('./routes/clip.routes');
   uploadRoutes = require('./routes/upload.routes');
   libraryRoutes = require('./routes/library.routes');
+  youtubeClipsRoutes = require('./routes/youtube-clips.routes');
   console.log('Routes loaded successfully');
 } catch (error) {
   console.error('Error loading routes:', error);
@@ -35,6 +36,7 @@ app.use('/api/content', contentRoutes);
 app.use('/api/clips', clipRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/library', libraryRoutes);
+app.use('/api/youtube-clips', youtubeClipsRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import YouTubeClipFinder from './YouTubeClipFinder';
 
 const ClipConfiguration = ({ content, onCreateClip }) => {
   const [config, setConfig] = useState({
@@ -73,17 +74,22 @@ const ClipConfiguration = ({ content, onCreateClip }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">
-        Configure Your Clip
-      </h2>
+    <div className="space-y-6">
+      {/* YouTube Clip Finder */}
+      <YouTubeClipFinder contentTitle={content.title} />
 
-      <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-        <h3 className="font-semibold text-gray-900">{content.title}</h3>
-        <p className="text-sm text-gray-600 mt-1">{content.overview}</p>
-      </div>
+      {/* Configuration Form */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          Configure Your Clip
+        </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+          <h3 className="font-semibold text-gray-900">{content.title}</h3>
+          <p className="text-sm text-gray-600 mt-1">{content.overview}</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
         {/* Clip Length */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -197,6 +203,7 @@ const ClipConfiguration = ({ content, onCreateClip }) => {
           {loading ? 'Creating Clip...' : 'Create Clip'}
         </button>
       </form>
+      </div>
     </div>
   );
 };
